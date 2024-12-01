@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Sửa chi tiêu{% endblock %}
+{% block content %}
+<h1>Sửa chi tiêu</h1>
+<form method="post">
+    <label for="date">Ngày</label>
+    <input type="date" id="date" name="date" value="{{ expense[1] }}" required>
+
+    <label for="category">Danh mục</label>
+    <select id="category" name="category" required>
+        {% for category in categories %}
+        <option value="{{ category[1] }}" {% if category[1] == expense[2] %}selected{% endif %}>{{ category[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="amount">Số tiền (VND)</label>
+    <input type="number" id="amount" name="amount" value="{{ expense[3] }}" required>
+
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+</form>
+{% endblock %}

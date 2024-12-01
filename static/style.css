@@ -1,0 +1,160 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.navbar {
+    background-color: #1a1a1a;  /* Đổi màu nền thành màu đen tối */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    color: #fff;  /* Đảm bảo màu chữ là màu trắng */
+    font-weight: 700;  /* Làm cho chữ đậm hơn */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Thêm bóng cho chữ để tăng độ tương phản */
+}
+
+.navbar-brand i {
+    margin-right: 10px;
+}
+
+.navbar-nav .nav-item {
+    margin-left: 20px;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;  /* Đảm bảo màu chữ là màu trắng */
+    font-weight: 600;  /* Làm cho chữ đậm hơn */
+    font-size: 18px;  /* Tăng kích thước chữ để dễ đọc hơn */
+    padding: 10px 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Thêm bóng cho chữ để tăng độ tương phản */
+    transition: background-color 0.3s ease, color 0.3s ease;  /* Thêm hiệu ứng chuyển màu nhẹ */
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: #333333;  /* Đổi màu nền khi hover thành màu xám đậm */
+    color: #fff;  /* Đảm bảo màu chữ là màu trắng khi hover */
+    border-radius: 4px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Thay đổi màu sắc của thead-dark để hiển thị rõ ràng hơn */
+.table thead.thead-dark th {
+    background-color: #343a40;  /* Màu nền xám đậm */
+    color: #ffffff;  /* Màu chữ trắng */
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.alert {
+    margin-top: 20px;
+}
+
+form {
+    max-width: 100%;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="number"], input[type="date"], select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a1a1a;  /* Đổi màu nút thành màu đen tối */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #333333;  /* Đổi màu nền khi hover thành màu xám đậm */
+}
+
+.status-over {
+    color: red;
+}
+
+.status-on {
+    color: orange;
+}
+
+.status-under {
+    color: green;
+}
+
+/* Tạo bố cục flexbox cho các nút hành động */
+.action-buttons {
+    display: flex;
+    justify-content: flex-start;  /* Căn các nút về phía đầu */
+    align-items: center;  /* Căn giữa theo trục dọc */
+    gap: 5px;  /* Thêm khoảng cách giữa các nút */
+}
+
+.action-buttons form {
+    margin: 0;
+    padding: 0;  /* Loại bỏ padding không cần thiết */
+}
+
+.action-buttons button,
+.action-buttons a {
+    padding: 5px 10px;  /* Giảm padding để các nút gọn hơn */
+    margin: 0;  /* Loại bỏ margin không cần thiết */
+}
+
+/* Đảm bảo các nút "Đặt lại dữ liệu" và "Xuất Excel" hiển thị nhất quán */
+.button-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}

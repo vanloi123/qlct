@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo{% endblock %}
+{% block content %}
+<h1>Báo cáo chi tiêu</h1>
+
+<h2>Tổng số tiền theo từng danh mục</h2>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Danh mục</th>
+            <th>Tổng số tiền (VND)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expense in category_expenses %}
+        <tr>
+            <td>{{ expense[0] }}</td>
+            <td>{{ "{:,.0f}".format(expense[1]) }} VND</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<h2>Chi tiết theo ngày, danh mục và thời gian</h2>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Ngày</th>
+            <th>Danh mục</th>
+            <th>Thời gian</th>
+            <th>Tổng số tiền (VND)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in report_data %}
+        <tr>
+            <td>{{ report[0] }}</td>
+            <td>{{ report[1] }}</td>
+            <td>{{ report[2] }}</td>
+            <td>{{ "{:,.0f}".format(report[3]) }} VND</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="total-expense" style="
+    font-family: 'Arial', sans-serif; 
+    font-size: 24px; 
+    font-weight: bold; 
+    color: #a30d1c; 
+    text-align: center; 
+    background-color: #f9f9f9; 
+    padding: 10px; 
+    border-radius: 8px; 
+    border: 2px solid #00FFFF; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    Tổng số tiền đã chi tiêu đến thời điểm hiện tại: {{ "{:,.0f}".format(total_expense) }} VND
+</h2>
+{% endblock %}
