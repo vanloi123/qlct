@@ -1,9 +1,9 @@
-
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 import sqlite3
 import pandas as pd
 from datetime import datetime
 import io
+import portalocker
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -231,7 +231,7 @@ def reports():
                       GROUP BY date, category, time
                       ORDER BY date, category, time''')
     report_data = cursor.fetchall()
-    report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
+    report_data  = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
     cursor.execute('SELECT SUM(amount) FROM expenses')
     total_expense = int(cursor.fetchone()[0])  # Tổng số tiền đã chi tiêu
     conn.close()
@@ -239,4 +239,4 @@ def reports():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
