@@ -255,7 +255,7 @@ def reports():
                       ORDER BY category''')
     category_expenses = cursor.fetchall()
     category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
-    cursor.execute('''SELECT date, category, TO_CHAR(TIMESTAMP 'epoch' + "timestamp" * INTERVAL '1 second', 'HH24:MI:SS') as time, SUM(amount) as total_amount
+    cursor.execute('''SELECT date, category, TO_CHAR(timestamp::timestamp, 'HH24:MI:SS') as time, SUM(amount) as total_amount
                       FROM expenses
                       GROUP BY date, category, time
                       ORDER BY date, category, time''')
