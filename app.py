@@ -18,28 +18,24 @@ def get_db_connection():
     )
     return conn
 
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS expenses (
-                       id SERIAL PRIMARY KEY,
-                       date TEXT,
-                       category TEXT,
-                       amount REAL,
-                       timestamp TEXT
-                       )''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS categories (
-                       id SERIAL PRIMARY KEY,
-                       name TEXT UNIQUE
-                       )''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
-                       id SERIAL PRIMARY KEY,
-                       category_id INTEGER,
-                       amount REAL,
-                       FOREIGN KEY (category_id) REFERENCES categories(id)
-                       )''')
-    conn.commit()
-    cursor.close()
+def init_db(): 
+    conn = get_db_connection() 
+    cursor = conn.cursor() 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS expenses ( 
+        id SERIAL PRIMARY KEY, 
+        date TEXT, category TEXT, 
+        amount REAL, 
+        timestamp TIMESTAMPTZ )''') 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS categories ( 
+        id SERIAL PRIMARY KEY, 
+        name TEXT UNIQUE )''') 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS budgets ( 
+        id SERIAL PRIMARY KEY, 
+        category_id INTEGER, 
+        amount REAL, 
+        FOREIGN KEY (category_id) REFERENCES categories(id) )''') 
+    conn.commit() 
+    cursor.close() 
     conn.close()
 
 # Gọi hàm init_db() khi ứng dụng khởi động 
@@ -74,7 +70,7 @@ def add_expense():
         amount = request.form['amount']
         # Lấy thời gian hiện tại với múi giờ chính xác
         tz = timezone('Asia/Ho_Chi_Minh')
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now(tz)
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -263,16 +259,12 @@ def reports():
         category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
 
         # Báo cáo chi tiêu theo ngày, danh mục và thời gian
-        cursor.execute('''SELECT date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::timestamp, 'HH24:MI:SS') as time, 
-                          SUM(amount) as total_amount
+        cursor.execute('''SELECT date, category, timestamp, SUM(amount) as total_amount
                           FROM expenses
-                          GROUP BY date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::timestamp, 'HH24:MI:SS')
-                          ORDER BY date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::timestamp, 'HH24:MI:SS')''')
+                          GROUP BY date, category, timestamp
+                          ORDER BY date, category, timestamp''')
         report_data = cursor.fetchall()
-        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
+        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2].strftime("%H:%M:%S"), int(r[3])) for r in report_data]  # Làm tròn số tiền
 
         # Tổng số tiền đã chi tiêu
         cursor.execute('SELECT SUM(amount) FROM expenses')
@@ -283,6 +275,7 @@ def reports():
         return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
     except Exception as e:
         return str(e), 500
+
 
 
 
