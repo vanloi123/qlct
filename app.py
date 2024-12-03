@@ -10,11 +10,11 @@ app.secret_key = 'supersecretkey'
 
 def get_db_connection():
     conn = psycopg2.connect(
-        dbname='your_dbname',
-        user='your_user',
-        password='your_password',
-        host='your_host',
-        port='your_port'
+        dbname='dataqlct',
+        user='dataqlct_user',
+        password='4nfIkZCOUSwM5kvPdcnuhQXEaqevAT2K',
+        host='dpg-ct77pg52ng1s73cb3s7g-a',
+        port='5432'
     )
     return conn
 
