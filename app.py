@@ -250,37 +250,39 @@ def export_data():
 
 @app.route('/reports')
 def reports():
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # Tổng chi tiêu theo danh mục
-    cursor.execute('''SELECT category, SUM(amount) as total_amount
-                      FROM expenses
-                      GROUP BY category
-                      ORDER BY category''')
-    category_expenses = cursor.fetchall()
-    category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
+        # Tổng chi tiêu theo danh mục
+        cursor.execute('''SELECT category, SUM(amount) as total_amount
+                          FROM expenses
+                          GROUP BY category
+                          ORDER BY category''')
+        category_expenses = cursor.fetchall()
+        category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
 
-    # Báo cáo chi tiêu theo ngày, danh mục và thời gian
-    cursor.execute('''SELECT date, category, 
-                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS') as time, 
-                      SUM(amount) as total_amount
-                      FROM expenses
-                      GROUP BY date, category, 
-                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')
-                      ORDER BY date, category, 
-                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')''')
-    report_data = cursor.fetchall()
-    report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
+        # Báo cáo chi tiêu theo ngày, danh mục và thời gian
+        cursor.execute('''SELECT date, category, 
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS') as time, 
+                          SUM(amount) as total_amount
+                          FROM expenses
+                          GROUP BY date, category, 
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')
+                          ORDER BY date, category, 
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')''')
+        report_data = cursor.fetchall()
+        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
 
-    # Tổng số tiền đã chi tiêu
-    cursor.execute('SELECT SUM(amount) FROM expenses')
-    total_expense = int(cursor.fetchone()[0])  # Tổng số tiền đã chi tiêu
+        # Tổng số tiền đã chi tiêu
+        cursor.execute('SELECT SUM(amount) FROM expenses')
+        total_expense = int(cursor.fetchone()[0])  # Tổng số tiền đã chi tiêu
 
-    cursor.close()
-    conn.close()
-    return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
-
+        cursor.close()
+        conn.close()
+        return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
+    except Exception as e:
+        return str(e), 500
 
 if __name__ == '__main__':
     init_db()
