@@ -42,13 +42,16 @@ def init_db():
     cursor.close()
     conn.close()
 
+# Gọi hàm init_db() khi ứng dụng khởi động 
+with app.app_context(): 
+    init_db()
+
 @app.route('/')
 def index():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM expenses')
     expenses = cursor.fetchall()
-    # Định dạng lại ngày tháng
     expenses = [(e[0], datetime.strptime(e[1], "%Y-%m-%d").strftime("%d/%m/%Y"), e[2], int(e[3])) for e in expenses]
     cursor.execute('SELECT * FROM categories')
     categories = cursor.fetchall()
