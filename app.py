@@ -59,7 +59,7 @@ def index():
                       FROM categories c
                       LEFT JOIN expenses e ON c.name = e.category
                       LEFT JOIN budgets b ON c.id = b.category_id
-                      GROUP BY c.name''')
+                      GROUP BY c.name,b.amount''')
     budget_status = cursor.fetchall()
     budget_status = [(b[0], int(b[2]), int(b[1])) for b in budget_status]
     cursor.close()
