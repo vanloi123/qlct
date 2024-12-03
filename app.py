@@ -264,13 +264,13 @@ def reports():
 
         # Báo cáo chi tiêu theo ngày, danh mục và thời gian
         cursor.execute('''SELECT date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS') as time, 
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::text, 'HH24:MI:SS') as time, 
                           SUM(amount) as total_amount
                           FROM expenses
                           GROUP BY date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::text, 'HH24:MI:SS')
                           ORDER BY date, category, 
-                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')''')
+                          TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'::text, 'HH24:MI:SS')''')
         report_data = cursor.fetchall()
         report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
 
@@ -283,6 +283,7 @@ def reports():
         return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
     except Exception as e:
         return str(e), 500
+
 
 if __name__ == '__main__':
     init_db()
