@@ -262,10 +262,14 @@ def reports():
     category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
 
     # Báo cáo chi tiêu theo ngày, danh mục và thời gian
-    cursor.execute('''SELECT date, category, TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS') as time, SUM(amount) as total_amount
+    cursor.execute('''SELECT date, category, 
+                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS') as time, 
+                      SUM(amount) as total_amount
                       FROM expenses
-                      GROUP BY date, category, TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')
-                      ORDER BY date, category, TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')''')
+                      GROUP BY date, category, 
+                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')
+                      ORDER BY date, category, 
+                      TO_CHAR(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS')''')
     report_data = cursor.fetchall()
     report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
 
