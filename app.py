@@ -23,7 +23,8 @@ def init_db():
     cursor = conn.cursor() 
     cursor.execute('''CREATE TABLE IF NOT EXISTS expenses ( 
         id SERIAL PRIMARY KEY, 
-        date TEXT, category TEXT, 
+        date TEXT, 
+        category TEXT, 
         amount REAL, 
         timestamp TIMESTAMPTZ )''') 
     cursor.execute('''CREATE TABLE IF NOT EXISTS categories ( 
@@ -88,6 +89,7 @@ def add_expense():
     cursor.close()
     conn.close()
     return render_template('add_expense.html', categories=categories)
+
 
 @app.route('/categories', methods=['GET', 'POST'])
 def manage_categories():
@@ -246,40 +248,25 @@ def export_data():
 
 @app.route('/reports')
 def reports():
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # Tổng chi tiêu theo danh mục
-        cursor.execute('''SELECT category, SUM(amount) as total_amount
-                          FROM expenses
-                          GROUP BY category
-                          ORDER BY category''')
-        category_expenses = cursor.fetchall()
-        category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
-
-        # Báo cáo chi tiêu theo ngày, danh mục và thời gian
-        cursor.execute('''SELECT date, category, timestamp, SUM(amount) as total_amount
-                          FROM expenses
-                          GROUP BY date, category, timestamp
-                          ORDER BY date, category, timestamp''')
-        report_data = cursor.fetchall()
-        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), 
-                        r[1], 
-                        r[2].astimezone(timezone('Asia/Ho_Chi_Minh')).strftime("%H:%M:%S"), 
-                        int(r[3])) for r in report_data]  # Làm tròn số tiền và chuyển đổi múi giờ
-
-        # Tổng số tiền đã chi tiêu
-        cursor.execute('SELECT SUM(amount) FROM expenses')
-        total_expense = int(cursor.fetchone()[0])  # Tổng số tiền đã chi tiêu
-
-        cursor.close()
-        conn.close()
-        return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
-    except Exception as e:
-        return str(e), 500
-
-
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''SELECT category, SUM(amount) as total_amount
+                      FROM expenses
+                      GROUP BY category
+                      ORDER BY category''')
+    category_expenses = cursor.fetchall()
+    category_expenses = [(c[0], int(c[1])) for c in category_expenses]  # Làm tròn số tiền thành số nguyên
+    cursor.execute('''SELECT date, category, TO_CHAR(timestamp::timestamp, 'HH24:MI:SS') as time, SUM(amount) as total_amount
+                      FROM expenses
+                      GROUP BY date, category, time
+                      ORDER BY date, category, time''')
+    report_data = cursor.fetchall()
+    report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2], int(r[3])) for r in report_data]  # Làm tròn số tiền
+    cursor.execute('SELECT SUM(amount) FROM expenses')
+    total_expense = int(cursor.fetchone()[0])  # Tổng số tiền đã chi tiêu
+    cursor.close()
+    conn.close()
+    return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
 
 
 
