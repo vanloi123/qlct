@@ -264,7 +264,10 @@ def reports():
                           GROUP BY date, category, timestamp
                           ORDER BY date, category, timestamp''')
         report_data = cursor.fetchall()
-        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), r[1], r[2].strftime("%H:%M:%S"), int(r[3])) for r in report_data]  # Làm tròn số tiền
+        report_data = [(datetime.strptime(r[0], "%Y-%m-%d").strftime("%d/%m/%Y"), 
+                        r[1], 
+                        r[2].astimezone(timezone('Asia/Ho_Chi_Minh')).strftime("%H:%M:%S"), 
+                        int(r[3])) for r in report_data]  # Làm tròn số tiền và chuyển đổi múi giờ
 
         # Tổng số tiền đã chi tiêu
         cursor.execute('SELECT SUM(amount) FROM expenses')
@@ -275,6 +278,7 @@ def reports():
         return render_template('reports.html', category_expenses=category_expenses, report_data=report_data, total_expense=total_expense)
     except Exception as e:
         return str(e), 500
+
 
 
 
